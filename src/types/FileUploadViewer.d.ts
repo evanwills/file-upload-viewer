@@ -3,12 +3,13 @@ import { ImageBlobReduce } from "./image-blob-reduce"
 export type TFileSender = (fileList : FileList) => Promise<boolean|string>;
 
 export interface IFileUploadViewerUserProps {
-    /**
+  /**
    * Whether or not to automatically exclude any files that cannot
    * be included in file upload.
    *
    * By default user must deliberately remove any files that
-   * cannot be uploaded.
+   * cannot be uploaded. If `auto-exclude` is set invalid files will
+   * be silently removed from the upload list.
    */
   autoExclude?: boolean,
 
@@ -22,7 +23,15 @@ export interface IFileUploadViewerUserProps {
   /**
    * Text for the button shown to the user asking them to confirm
    * they want to upload their selected files.
-   * (after they have clicked the confirm and upload dialogue button)
+   *
+   * If `confim-complete` is set, this is shown when `<FileUploadViewer>`
+   * is in `confirmSubmit` state.
+   *
+   * Or
+   *
+   * If `confim-complete` is omitted or `FALSE`, it is shown when
+   * `<FileUploadViewer>` is in `viewing` state, if there are no
+   * invalid files blocking upload.
    */
   confirmBtnTxt?: string,
 
@@ -47,7 +56,7 @@ export interface IFileUploadViewerUserProps {
    * If the `confirm-cancle` attribute is set, the user will be asked
    * to confirm that they really want to cancel the upload
    */
-  confirmComplete?: string,
+  confirmComplete?: false,
 
   /**
    * An async function that sends files to the server and returns boolean or string
@@ -182,7 +191,7 @@ export interface IFileUploadViewerComponentProps extends IFileUploadViewerUserPr
   cancelBtnTxt: string,
   confirmBtnTxt: string,
   confirmCancel: string,
-  confirmComplete: string,
+  confirmComplete: false,
   fileSender: TFileSender|null,
   id: string,
   label: string,

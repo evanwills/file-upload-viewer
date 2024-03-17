@@ -42,7 +42,10 @@
 
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue';
-import { IFileUploadViewerComponentProps, IFileUploadViewerUserProps } from '../types/FileUploadViewer.d';
+import {
+  IFileUploadViewerComponentProps,
+  IFileUploadViewerUserProps,
+} from '../types/FileUploadViewer.d';
 import { chooseRightSlot } from '../utils/vue-utils';
 import { propAsBytes, propAsNumber } from '../utils/data-utils';
 
@@ -77,10 +80,21 @@ const props : IFileUploadViewerComponentProps = withDefaults(
    * Whether or not the user must confirm they are sure they want to
    * cancel the file upload
    *
-   * By default, when the user clicks the close button or causes the
-   * dialog to close, it just closes and all data is lost.
-   * If the `confirm-cancle` attribute is set, the user will be asked
-   * to confirm that they really want to cancel the upload
+   * This is only relevant when `<FileUploadViewer>` is in `empty` or
+   * `viewing` state
+   *
+   * Options are:
+   * * `no`    - *[default]*
+   *             The dialogue modal is automatically closed and any
+   *             selected files will be removed from the upload list.
+   * * `yes`   - The dialogue modal is automatically closed if the
+   *             list of selected files is empty or has no valid
+   *             files in it.
+   *             If there is one or more valid files the user will be
+   *             asked to confirm they want to abandon their upload
+   *             attempt.
+   * * `force` - Always ask the user to wish to confirm they want to
+   *             abandon their upload attempt.
    */
   confirmCancel: 'no',
 
@@ -94,7 +108,7 @@ const props : IFileUploadViewerComponentProps = withDefaults(
    * If the `confirm-cancle` attribute is set, the user will be asked
    * to confirm that they really want to cancel the upload
    */
-  confirmComplete: 'no',
+  confirmComplete: false,
 
   /**
    * An async function that sends files to the server and returns
@@ -303,9 +317,9 @@ const closeModal = () => {
         break;
 
       case 'preview':
-        // if the `confirm-cancel` attribute is set to
+        // if the `confirm-cancel` attribute is set to `force`
         if (props.confirmCancel === 'no' ||
-          (props.confirmCancel === 'loose' && goodCount.value < 1)
+          (props.confirmCancel === 'yes' && goodCount.value < 1)
         ) {
           doClose = true;
         } else {
@@ -332,11 +346,21 @@ const closeModalDialog = (event : MouseEvent) => {
 // START: Lifecycle methods
 
 onBeforeMount(() => {
+  if (['force', 'no', 'yes'].indexOf(props.confirmCancel) < 0) {
+    console.error(
+      '`<FileUploadViewer` expexts attribute `confirm-cancel` to ' +
+      'have one of the following values: "no" (default) or "yea", ' +
+      `or "force". "${props.confirmCancel}" is not valid`,
+    );
+  }
+
   max.value = propAsNumber(props, 'maxFiles', max.value);
   min.value = propAsNumber(props, 'minFiles', min.value);
   maxPx.value = propAsNumber(props, 'maxPixels', maxPx.value);
   maxBytesSingle.value = propAsBytes(props, 'maxSingle', maxBytesSingle.value);
   maxBytesTotal.value = propAsBytes(props, 'maxTotal', maxBytesTotal.value);
+
+
 
   acceptStr.value = props.types;
 })

@@ -57,10 +57,17 @@ export const chooseRightSlot = (
       }
       break;
 
-    case 'confirm-cancel':
-    case 'confirm-complete':
+    case 'confirmcancel':
+    case 'confirmcomplete':
       if (slotHasContent(slots, `${region}Confirm`)) {
         suffix = 'Confirm';
+      }
+      break;
+
+    case 'success':
+    case 'failed':
+      if (slotHasContent(slots, `${region}Complete`)) {
+        suffix = 'Complete';
       }
       break;
   }
