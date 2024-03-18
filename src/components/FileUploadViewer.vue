@@ -54,6 +54,12 @@ const slots = defineSlots();
 const props : IFileUploadViewerComponentProps = withDefaults(
   defineProps<IFileUploadViewerUserProps>(), { // eslint-disable-line no-unused-vars
   /**
+   * List of file extensions matching file types the server will
+   * accept
+   */
+  accept: 'png jpg webp pdf docx doc',
+
+  /**
    * Whether or not to automatically exclude any files that cannot
    * be included in file upload.
    *
@@ -199,12 +205,6 @@ const props : IFileUploadViewerComponentProps = withDefaults(
    * to the browser's File selection user interface.
    */
   selectFirst: false,
-
-  /**
-   * List of file extensions matching file types the server will
-   * accept
-   */
-  types: 'png jpg webp pdf docx doc',
 
   /**
    * Whether or not the user can upload an unlimited number

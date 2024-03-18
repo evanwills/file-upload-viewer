@@ -4,6 +4,14 @@ export type TFileSender = (fileList : FileList) => Promise<boolean|string>;
 
 export interface IFileUploadViewerUserProps {
   /**
+   * List of file extensions matching file types the server will
+   * accept
+   *
+   * Default: 'png jpg webp pdf docx doc'
+   */
+  accept?: string,
+
+  /**
    * Whether or not to automatically exclude any files that cannot
    * be included in file upload.
    *
@@ -59,19 +67,38 @@ export interface IFileUploadViewerUserProps {
   confirmComplete?: false,
 
   /**
-   * An async function that sends files to the server and returns boolean or string
+   * An async function that sends files to the server and returns
+   * boolean or string.
    *
-   * * `TRUE`   if upload was successful.
-   * * `FALSE`  if upload failed and no additional error info is
-   *            available.
-   * * {String} error message if we know something about the failure
-   *            state of the upload)
+   * If `file-sender` is *not* null, `<FileUploadViewer>` will handle
+   * rendering the loading and success/failed states. (Content for
+   * these states can be managed via slots
    *
-   * > __Note:__ If `file-sender` is `null` FileUpload emits a
-   * >           `confirmupload` event with a `FileList` object as
-   * >           its value. See
-   * >  [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
-   * >           for more info
+   * If `file-sender` *is* null, when the user confirms they wish to
+   * upload their files `<FileUploadViewer>`  will emit a `submit`
+   * event, with a value of
+   * [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList),
+   * indicating that the pareent code should handle submitting the
+   * selected files to the server.
+   *
+   * `file-sender` has the form:
+   * ```ts
+   * async (fileList: FileList) : boolean|string
+   * ```
+   *
+   * `fileList` is a
+   * [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
+   * object, containing  one or more user selected
+   * [File](https://developer.mozilla.org/en-US/docs/Web/API/File) objects
+   * to be sent to the server.
+   *
+   * If the return value is boolean, `TRUE` indicates success and &
+   * `FALSE` indicates failure. `<FileUploadViewer>`'s state will be
+   * updated accordingly.
+   *
+   * IF the return value is a string, failure is assumed.
+   * `<FileUploadViewer>`'s state will be updated to `failed` and the
+   * string will be rendered as an error message.
    */
   fileSender?: TFileSender|null,
 
@@ -161,14 +188,6 @@ export interface IFileUploadViewerUserProps {
   selectFirst?: boolean,
 
   /**
-   * List of file extensions matching file types the server will
-   * accept
-   *
-   * Default: 'png jpg webp pdf docx doc'
-   */
-  types?: string,
-
-  /**
    * Whether or not the user can upload an unlimited number
    * *(999)* of files.
    *
@@ -187,6 +206,7 @@ export interface IFileUploadViewerUserProps {
 }
 
 export interface IFileUploadViewerComponentProps extends IFileUploadViewerUserProps {
+  accept: string,
   autoExclude: boolean,
   cancelBtnTxt: string,
   confirmBtnTxt: string,
@@ -203,7 +223,6 @@ export interface IFileUploadViewerComponentProps extends IFileUploadViewerUserPr
   noloop: boolean,
   reorder: boolean,
   selectFirst: boolean,
-  types: string,
   unlimited: boolean,
   uploadBtnText: string,
 }

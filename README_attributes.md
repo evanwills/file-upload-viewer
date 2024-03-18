@@ -35,9 +35,21 @@ and buttons within the component
 
 Label to (briefly) describe the purpose of the upload
 
+
 ---
 
+
 ## Optional attributes
+
+
+
+### `accept`
+
+|  Required  |    Type    |  Default                    |     Variable Name     |
+|------------|------------|-----------------------------|-----------------------|
+| _optional_ | _{string}_ | "png jpg webp pdf docx doc" | `props.uploadBtnIcon` |
+
+List of file extensions matching file types the server will accept
 
 
 
@@ -177,22 +189,6 @@ IF the return value is a string, failure is assumed.
 string will be rendered as an error message.
 
 
-### `help-txt`
-
-|  Required  |    Type    |  Default   |  Variable Name  |
-|------------|------------|------------|-----------------|
-| _optional_ | _{string}_ | "" (empty) | `props.helpTxt` |
-
-Text to show user to help them choose appropritate files to
-upload.
-
-Shown when `<FileUploadViewer>` is in `empty` and `viewing` state.
-For more control over help information use
-[`bodyMain`](README_slots.md#bodymain-multi-state-slot),
-[`bodyEmpty`](README_slots.md#bodyempty) and/or
-[`bodyViewing`](README_slots.md#bodyviewing) slots.
-
-
 
 ### `max-files`
 
@@ -200,17 +196,17 @@ For more control over help information use
 |------------|-------------------|---------|-------------------|
 | _optional_ | _{string|number}_ |   `1`   | `props.maxFiles`  |
 
-Maximum numberof files the usercan upload at one time
+Maximum number of files the user can upload at one time
 
 * If `maxFiles` is set to zero (0) maximum is unlimited
 (actual limit will be set to: 999).
 * If `maxFiles` is negative orcannot be parsed as an integer,
 the default (1) will be used
 
-> __Note:__ __`unlimited` overrides `max-files`.__
+> __Note:__ __[`unlimited`](#unlimited) overrides `max-files`.__
 >
-> If you want to allow users to upload more than 999 files in
-one go, do __*NOT*__ use unlimited.
+> If you want to allow users to upload more than 999 files in one go,
+> do __*NOT*__ use [`unlimited`](#unlimited).
 
 
 
@@ -218,9 +214,9 @@ one go, do __*NOT*__ use unlimited.
 
 |  Required  |       Type        | Default  |   Variable Name   |
 |------------|-------------------|----------|-------------------|
-| _optional_ | _{string|number}_ |  `1500`  | `props.maxPixels` |
+| _optional_ | _{string|number}_ |  `0`  | `props.maxPixels` |
 
-Maximum numberof pixels an image can be in any dimension
+Maximum numberof pixels an image can be in any dimension.
 
 
 
@@ -264,13 +260,13 @@ Minimum numberof files the usermust upload
 |------------|-------------|---------|----------------|
 | _optional_ | _{boolean}_ | `FALSE` | `props.noloop` |
 
-Whetherornot to loop the carousel around if the usertries
+Whether or not to loop the carousel around if the usertries
 to focus beyond the limit of the carousel
 
 e.g. Prevent moving the focus right of the last item,
 orleft of the first item
 
-The default behaviourof the carousel is to loop back to the
+The default behaviour of the carousel is to loop back to the
 begining when moving the focus item to afterthe last item,
 orloop to the end when moving.
 
@@ -282,12 +278,13 @@ orloop to the end when moving.
 |------------|-------------|---------|-----------------|
 | _optional_ | _{boolean}_ | `FALSE` | `props.reorder` |
 
-Whetherornot the usercan reorderfiles/images within the
+Whether or not the user can reorder files/images within the
 list
 
-By default the selected orderis the orderthe files get
-sent to the server. If reorderis true, then the usercan
-change the orderbefore the files are uploaded.
+By default the selected order is the order the files get are found in
+the operating system or that they are selected by the user if files
+are added one by one. If `reorder` is `TRUE`, then the user can
+change the order before the files are uploaded.
 
 
 
@@ -297,8 +294,13 @@ change the orderbefore the files are uploaded.
 |------------|-------------|---------|---------------------|
 | _optional_ | _{boolean}_ | `FALSE` | `props.selectFirst` |
 
-Whetherornot to show the empty UI screen orget the userto
+Whether or not to show the empty UI screen orget the user to
 select files without showing the empty UI screen.
+
+By default, the user is shown the [`empty`](README.md#empty) state
+view before they're are asked to select files. By including the
+attribute `select-first`, the user enter the system's file selection
+user interface and asked to select files.
 
 
 
