@@ -1,15 +1,82 @@
 # `<FileUploadViewer>`
 
-* [States](#states)
+* [Introduction](introduction)
+* [User work flow](#user-work-flow)
 * [Attributes](README_attributes.md)
   * [Required attributes](README_attributes.md#required-attributes)
   * [Optional attributes](README_attributes.md#optional-attributes)
 * [Slots](README_slots.md)
   * [`<header>`](README_slots.md#header-slots)
-  * [`<main>`](README_slots.md#main-slots)
+  * [Body](README_slots.md#body-slots) (`<main>`)
   * [`<footer>`](README_slots.md#footer-slots)
+  * [Buttons](README_slots.md#button-slots)
+* [States](#states)
+* [Events](#events)
 * [Useful links](#useful-links)
 * [Vite and VueJS + Typescript](README.vite.md)
+
+---
+
+## Introduction
+
+`FileUploadViewer` is a [Vue.js](https://v3.vuejs.org/) component that
+provides a fancy user interface for uploading one or more files of
+specified types and (for images) having the images resized in the
+browser before they're sent to the server.
+
+> __Note:__ `FileUploadViewer` does not handle anything to do with sending
+>           the files to the server.
+>
+> When the user confirms they are happy with their selection, a
+> [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
+> object containing all the valid selected files is created  and made
+> available and a `confirmupload` event is emitted. It is then up to
+> the parent component to handle sending the files to the server.
+
+----
+
+## User work flow
+
+1. The user clicks on the first (Upload) button.
+2. A modal pops up over the page with some basic info what they
+   should upload and with with a "Choose files" button.
+3. User chooses one or more files.
+4. A carousel is displayed showing the selected files.
+   * If the file is an image and is larger than allowed, it will be
+     resized. While it is being resized, a placeholder image is shown
+     with some animation to indicate something is happening.
+   * Once the image has been resized, it will be displayed.
+   * For valid non-image files a placeholder will be shown
+   * For files/images that are too large or a forbidden type
+     (or both) a placeholder will be shown indicating that there is
+     a  problem and what the poblem is.
+5. The carousel can be moved left and right so a different file/image
+   is in focus.
+6. When an image/file has focus in the carousel, extra controls are
+   shown for that image/file:
+   * *(If the [`reorder`](README_attributes.md#reorder) attribute*
+     *is set)*, the image/file can be moved left or right relative
+     to its neighbour.
+   * The image/file can be replaced with a different image/file from
+     the file system.
+   * The image/file can be deleted. (removed from the upload list.)
+7. *(Unless [`auto-exclude`](README_attributes.md#auto-exclude)*
+   *attribute is set)* The user will be required to remove any files
+   that are over-sized, a forbidden file type or in excess of the
+   maximum number of files allowed. Or if the maximum total upload
+   size is exceeded.
+8. Once all bad files are removed the user can click the
+   __`Confirm and upload`__ button.
+9. * *(If `upload-confirm-text` attribute was set and not empty)*
+      The user will then have a final prompt to confirm they are
+      happy with their selection.
+      1. The user can then either click __`Cancel`__ to go back to
+         the carousel interface<br />
+         OR
+      2. Click __`Send files`__ to get `FileUpload` to tell the
+         client to do the upload work.
+   * *(If no confirmation is required)* `FileUpload` will tell the
+      client to do the upload work.
 ---
 
 ## States
@@ -95,7 +162,14 @@ function has returned a failed result.
 
 ### Image manipulation
 
+For bandwidth reasons, I am using `image-blob-reduce` because it's
+tiny (18kb). However, in the future I may switch to Photon because it's so
+much faster and more powerful even though it's 20 times the size (367kb).
+
+* [image-blob-reduce](https://github.com/nodeca/image-blob-reduce)
+  * [NPM - image-blob-reduce](https://www.npmjs.com/package/image-blob-reduce)
+  * [Pica](https://github.com/nodeca/pica)
 * [Photon](https://silvia-odwyer.github.io/photon/)
-* [Image resize](https://docs.rs/photon-rs/latest/photon_rs/transform/fn.resize.html)
-* [Image rotate](https://docs.rs/photon-rs/latest/photon_rs/transform/fn.rotate.html)
-* [Using Photon on the Web](https://silvia-odwyer.github.io/photon/guide/using-photon-web/)
+  * [Image resize](https://docs.rs/photon-rs/latest/photon_rs/transform/fn.resize.html)
+  * [Image rotate](https://docs.rs/photon-rs/latest/photon_rs/transform/fn.rotate.html)
+  * [Using Photon on the Web](https://silvia-odwyer.github.io/photon/guide/using-photon-web/)

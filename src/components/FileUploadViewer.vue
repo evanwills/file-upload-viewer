@@ -137,24 +137,25 @@ const props : IFileUploadViewerComponentProps = withDefaults(
   fileSender: null,
 
   /**
+   * The text for the button the user first sees and uses to open
+   * the full upload dialogue/widget
+   */
+  firstBtnText: 'Upload',
+
+  /**
    * Maximum number of files the user can upload at one time
    *
    * * If `maxFiles` is set to zero (0) maximum is unlimited
    *   (actual limit will be set to: 999).
    * * If `maxFiles` is negative or cannot be parsed as an integer,
    *   the default (1) will be used
-   *
-   * > __Note:__ __`unlimited` overrides `max-files`.__
-   * >
-   * > If you want to allow users to upload more than 999 files in
-   * one go, do __*NOT*__ use unlimited.
    */
-  maxFiles: '1',
+  maxFiles: 1,
 
   /**
    * Maximum number of pixels an image can be in any dimension
    */
-  maxPixels: '1500',
+  maxPixels: 1500,
 
   /**
    * Maximum size a single file can be
@@ -171,9 +172,37 @@ const props : IFileUploadViewerComponentProps = withDefaults(
   maxTotal: '15MB',
 
   /**
-   * Minimum number of files the user must upload
+   * Whether or not to show metadata about the files being uploaded
+   * in the confirmation screen.
+   *
+   * By default when the user moves to the confirm submit state, they
+   * just see content supplied by the parent component.
+   * If `metadata-confirm` is present and true, a table of metadata
+   * about the files being uploaded will be rendered below the
+   * confirm submit body content.
    */
-  minFiles: '1',
+  metadataConfirm: false,
+
+  /**
+   * Minimum number of files the user must upload
+   *
+   * If `minFiles` is set to zero (0), the user is not required to
+   * upload any files.
+   *
+   * > __Note:__ If the `required` attribute is set and `minFiles`
+   * >           is set to zero (0), `minFiles` will be assumed to
+   * >           be one (1).
+   * >           If `minFiles is greater than 1 and fewer files are
+   * >           set than required by `minFiles`, `<FileUploadViewer>`
+   * >           will be assumed to be invalid.
+   *
+   * * If `minFiles` is negative or cannot be parsed as an integer,
+   *   * If the `required` attribute is set the required minimum, one
+   *     (1) will be used.
+   *   * If the `required` attribute is __*not*__ set the default,
+   *     zero (0) will be used.
+   */
+  minFiles: 0,
 
   /**
    * Whether or not to loop the carousel around if the user tries
@@ -199,6 +228,14 @@ const props : IFileUploadViewerComponentProps = withDefaults(
   reorder: false,
 
   /**
+   * Whether or not the user must upload at least 1 file.
+   *
+   * If set, default `minFiles` will be 1
+   * If is __*not*__ set, default `minFiles` will be 0
+   */
+  required: false,
+
+  /**
    * By default FileUpload Shows the empty state before allowing
    * users to select. By including the `select-first` attribute, when
    * a user clicks on the "Upload" button, they are taken immediately
@@ -216,12 +253,6 @@ const props : IFileUploadViewerComponentProps = withDefaults(
    * one go, do __*NOT*__ use unlimited.
    */
   unlimited: false,
-
-  /**
-   * The text for the button the user first sees and uses to open
-   * the full upload dialogue/widget
-   */
-  uploadBtnText: 'Upload',
 });
 
 //  END:  Properties/attributes
@@ -355,7 +386,17 @@ onBeforeMount(() => {
   }
 
   max.value = propAsNumber(props, 'maxFiles', max.value);
-  min.value = propAsNumber(props, 'minFiles', min.value);
+  min.value = propAsNumber(props, 'minFiles', (props.required === true) ? 1 : 0);
+
+  if (props.required === true) {
+    if (min.value < 1) {
+      console.warn(`Setting min files to 1 because #${props.id} is required`);
+      min.value = 1;
+    }
+  } else if (min.value < 0) {
+      console.warn(`Setting min files to 0 because #${props.id} is optional`);
+      min.value = 0;
+  }
   maxPx.value = propAsNumber(props, 'maxPixels', maxPx.value);
   maxBytesSingle.value = propAsBytes(props, 'maxSingle', maxBytesSingle.value);
   maxBytesTotal.value = propAsBytes(props, 'maxTotal', maxBytesTotal.value);

@@ -58,11 +58,11 @@ export const fileSizeAsBytes = (
   }
 
   if (typeof input === 'string') {
-    const regex = /^([0-9]+(?:\.[0-9]+))([kmgt]b)?$/i;
+    const regex = /^([0-9]+(?:\.[0-9]+))\s*([kmgt]b)?$/i;
     const units = ['bytes', 'kb', 'mb', 'gb', 'tb'];
     let matches : string[]|null = null;
 
-    while ((matches = regex.exec(input)) !== null) {
+    while ((matches = regex.exec(input.trim())) !== null) {
       if (typeof matches[2] === 'string') {
         const pow = units.indexOf(matches[2].toLowerCase());
 

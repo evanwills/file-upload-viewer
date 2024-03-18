@@ -103,6 +103,12 @@ export interface IFileUploadViewerUserProps {
   fileSender?: TFileSender|null,
 
   /**
+   * The text for the button the user first sees and uses to open
+   * the full upload dialogue/widget
+   */
+  firstBtnText?: string,
+
+  /**
    * ID of this component. Used to add unique IDs to all fields
    * and buttons within the component
    *
@@ -152,6 +158,18 @@ export interface IFileUploadViewerUserProps {
   maxTotal?: string|number,
 
   /**
+   * Whether or not to show metadata about the files being uploaded
+   * in the confirmation screen.
+   *
+   * By default when the user moves to the confirm submit state, they
+   * just see content supplied by the parent component.
+   * If `metadata-confirm` is present and true, a table of metadata
+   * about the files being uploaded will be rendered below the
+   * confirm submit body content.
+   */
+  metadataConfirm?: boolean,
+
+  /**
    * Minimum number of files the user must upload
    */
   minFiles?: string|number,
@@ -180,6 +198,14 @@ export interface IFileUploadViewerUserProps {
   reorder?: boolean,
 
   /**
+   * Whether or not the user must upload at least 1 file.
+   *
+   * If set, default `minFiles` will be 1
+   * If is __*not*__ set, default `minFiles` will be 0
+   */
+  required?: boolean,
+
+  /**
    * By default FileUpload Shows the empty state before allowing
    * users to select. By including the `select-first` attribute, when
    * a user clicks on the "Upload" button, they are taken immediately
@@ -197,12 +223,6 @@ export interface IFileUploadViewerUserProps {
    * one go, do __*NOT*__ use unlimited.
    */
   unlimited?: boolean,
-
-  /**
-   * The text for the button the user first sees and uses to open
-   * the full upload dialogue/widget
-   */
-  uploadBtnText?: string,
 }
 
 export interface IFileUploadViewerComponentProps extends IFileUploadViewerUserProps {
@@ -213,18 +233,20 @@ export interface IFileUploadViewerComponentProps extends IFileUploadViewerUserPr
   confirmCancel: string,
   confirmComplete: false,
   fileSender: TFileSender|null,
+  firstBtnText: string,
   id: string,
   label: string,
   maxFiles: string|number,
   maxPixels: string|number,
   maxSingle: string|number,
   maxTotal: string|number,
+  metadataConfirm: boolean,
   minFiles: string|number,
   noloop: boolean,
   reorder: boolean,
+  required: boolean,
   selectFirst: boolean,
   unlimited: boolean,
-  uploadBtnText: string,
 }
 
 

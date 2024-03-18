@@ -1,6 +1,7 @@
 # `<FileUploadViewer>` Slots
 
-* [States](README.md#states)
+* [Introduction](README.md#introduction)
+* [User work flow](README.md#user-work-flow)
 * [Attributes](README_attributes.md)
   * [Required attributes](README_attributes.md#required-attributes)
   * [Optional attributes](README_attributes.md#optional-attributes)
@@ -29,7 +30,7 @@
     * [`bodyComplete`](#bodycomplete-multi-state-slot) (multi-state slot)
     * [`bodySuccess`](#bodysuccess)
     * [`bodyFailed`](#bodyfailed)
-  * `<footer>`
+  * [`<footer>`](#footer-slots)
     * [`footerAll`](#footerall-multi-state-slot) (multi-state slot)
     * [`footerMain`](#footermain-multi-state-slot) (multi-state slot)
     * [`footerEmpty`](#footerempty)
@@ -41,15 +42,26 @@
     * [`footerComplete`](#footercomplete-multi-state-slot) (multi-state slot)
     * [`footerSuccess`](#footersuccess)
     * [`footerFailed`](#footerfailed)
+  * [Buttons](#button-slots)
+    * [`first-btn`](#first-btn-slot)
+    * [`submit-btn`](#submit-btn-slot)
+    * [`confirm-cancel-btn`](#confirm-cancel-btn-slot)
+    * [`confirm-complete-btn`](#confirm-complete-btn-slot)
+* [States](README.md#states)
 * [Useful links](#useful-links)
 * [Vite and VueJS + Typescript](README.vite.md)
 
 ---
 
-Each block renders a different block for the current state. Because
+`<FileUploadViewer>` has three main content blocks for rendering
+information to the user: [`<header>`](#header-slots),
+[Body](#body-slots) (`<main>`) and [`<footer>`](#footer-slots).
+Each block renders a different content for the current state. Because
 this could be annoying to manage from a developer's perspective,
 there are some multi-state slots that can be rendered for multiple
 states.
+
+
 
 ## `<header>` slots
 
@@ -600,3 +612,74 @@ state, it will be rendered in the modal.
 >           [`footerComplete`](#footercomplete-multi-state-slot) are
 >           present and not empty.
 
+
+---
+
+## Button slots
+
+
+`<FileUploadViewer>` also allows you to customise the HTML content of
+the main action buttons:
+  [`first-btn`](#first-btn-slot),
+  [`submit-btn`](#submit-btn-slot),
+  [`confirm-cancel-btn`](#confirm-cancel-btn-slot) &
+  [`confirm-complete-btn`](#confirm-complete-btn-slot).
+
+It is common for buttons to include icons along with (or instead of)
+text These slots allow you to do just that.
+
+Note if you only want simple text content, then use
+`<FileUploadViewer` attribute for the given button.
+
+
+### `first-btn` slot
+
+HTML content for the button the user first sees and uses to open
+the full upload dialogue/widget.
+
+Plain text content can be added using the
+[`first-btn-text`](README_attributes.md#first-btn-text) attribute.
+
+
+### `submit-btn` slot
+
+HTML content for the button the user sees when they have selected files
+to upload. If [`confirm-complete`](#confirm-complete) is present and
+true, Clicking on this button will take them to the upload
+confirmation state. Otherwise clicking on the button will trigger
+the upload.
+
+Plain text content can be added using the
+[`submit-btn-text`](README_attributes.md#submit-btn-text) attribute.
+
+
+### `confirm-cancel-btn` slot
+
+HTML content for the button the user sees when they have selected files
+to upload. If [`confirm-complete`](#confirm-complete) is present and
+true, Clicking on this button will take them to the upload
+confirmation state. Otherwise clicking on the button will trigger
+the upload.
+
+Plain text content can be added using the
+[`cancel-btn-txt`](README_attributes.md#cancel-btn-txt) attribute.
+
+
+### `confirm-submit-btn` slot
+
+HTML content for the button shown to the user asking them to confirm they
+are ready to upload their selected files.
+
+If [`confim-complete`](#confirm-complete) is set, this is shown when
+`<FileUploadViewer>` is in [`confirmSubmit`](README.md#confirmsubmit)
+state.
+
+Or
+
+If [`confim-complete`](#confirm-complete) is omitted or
+`false`, it is shown when `<FileUploadViewer>` is in
+[`viewing`](README.md#viewing) state, if there are no invalid files
+blocking upload.
+
+Plain text content can be added using the
+[`confirm-submit-btn-txt`](README_attributes.md#confirm-submit-btn-txt) attribute.
